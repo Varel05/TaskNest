@@ -14,7 +14,7 @@ Sistem Manajemen Tugas Kelompok adalah sebuah aplikasi berbasis web yang diranca
 - **Framework:** Laravel 11
 - **Database:** MySQL
 - **Front-End:** Blade Template, Bootstrap/Tailwind CSS
-- **Autentikasi:** Laravel Breeze/Jetstream
+- **Autentikasi:** Laravel Breeze
 
 ## Struktur Database
 ### Tabel Utama
