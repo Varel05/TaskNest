@@ -28,39 +28,36 @@
             </div>
         </div>
 
-        @extends('layouts.app')
-
+        <!-- Projects Grid -->
         @section('content')
-        <div class="container">
-            <h2>Proyek Anda</h2>
-
+            <h1>Projects</h1>
             <a href="{{ route('projects.create') }}" class="btn btn-primary">Add Project</a>
-        
-            @if($projects->isEmpty())
-                <p>Anda belum terlibat dalam proyek apa pun.</p>
-            @else
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Nama Proyek</th>
-                            <th>Nama Ketua</th>
-                            <th>Status</th>
-                            <th>Periode</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($projects as $project)
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($projects as $project)
                         <tr>
                             <td>{{ $project->name }}</td>
-                            <td>{{ $project->description }}</td>
-                            <td>{{ ucfirst($project->status) }}</td>
-                            <td>{{ $project->start_date }} - {{ $project->end_date }}</td>
+                            <td>{{ $project->status }}</td>
+                            <td>
+                                <a href="{{ route('projects.show', $project->id) }}">View</a>
+                                <a href="{{ route('projects.edit', $project->id) }}">Edit</a>
+                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
                         </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
-        </div>
-        @endsection   
-        
+                    @endforeach
+                </tbody>
+            </table>
+        @endsection
+    </div>
 </x-app-layout>
