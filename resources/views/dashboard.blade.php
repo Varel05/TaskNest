@@ -33,7 +33,7 @@
         <div class="container mx-auto p-6">
             <!-- Title and Add Button -->
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-bold text-gray-800">Projects</h1>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Projects</h1>
                 <a href="{{ route('projects.create') }}" 
                     class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
                     Add Project
@@ -41,9 +41,9 @@
             </div>
 
             <!-- Projects Table -->
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-                    <thead class="bg-gray-100 text-gray-800">
+            <div class="overflow-x-auto ">
+                <table class="min-w-full bg-white dark:bg-gray-900 shadow-md overflow-hidden">
+                    <thead class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
                         <tr>
                             <th class="px-6 py-3 text-left text-sm font-medium">Name</th>
                             <th class="px-6 py-3 text-left text-sm font-medium">Status</th>
@@ -52,9 +52,9 @@
                     </thead>
                     <tbody>
                         @foreach ($projects as $project)
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="px-6 py-4 text-gray-700">{{ $project->name }}</td>
-                                <td class="px-6 py-4 text-gray-700">{{ $project->status }}</td>
+                            <tr class="border-b">
+                                <td class="px-6 py-4 text-gray-700 dark:text-white">{{ $project->name }}</td>
+                                <td class="px-6 py-4 text-gray-700 dark:text-white">{{ $project->status }}</td>
                                 <td class="px-6 py-4 flex space-x-2">
                                     <!-- View Button -->
                                     <a href="{{ route('projects.show', $project->id) }}" 

@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
+    <div class="max-w-4xl mx-auto mt-8 p-6 bg-white dark:bg-gray-900 border-2 shadow-md rounded-lg">
         <!-- Title -->
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ $project->name }}</h1>
+        <h1 class="text-3xl font-bold dark:text-white text-gray-800 mb-4">{{ $project->name }}</h1>
 
         <!-- Description -->
-        <p class="text-gray-600 mb-6">{{ $project->description }}</p>
+        <p class="dark:text-white text-gray-600 mb-6">{{ $project->description }}</p>
 
         <!-- Status -->
         <div class="mb-4">
@@ -19,12 +19,12 @@
         <!-- Dates -->
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <p class="text-sm font-medium text-gray-500">Start Date</p>
-                <p class="text-gray-800">{{ \Carbon\Carbon::parse($project->start_date)->format('F j, Y') }}</p>
+                <p class="text-sm font-medium dark:text-white text-gray-500">Start Date</p>
+                <p class="dark:text-white text-gray-800">{{ \Carbon\Carbon::parse($project->start_date)->format('F j, Y') }}</p>
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-500">End Date</p>
-                <p class="text-gray-800">{{ \Carbon\Carbon::parse($project->end_date)->format('F j, Y') }}</p>
+                <p class="text-sm font-medium dark:text-white text-gray-500">End Date</p>
+                <p class="dark:text-white text-gray-800">{{ \Carbon\Carbon::parse($project->end_date)->format('F j, Y') }}</p>
             </div>
         </div>
     </div>
