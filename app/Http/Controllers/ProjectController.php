@@ -42,7 +42,7 @@ class ProjectController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
+        return redirect()->route('dashboard')->with('success', 'Project created successfully.');
     }
 
     // Menampilkan detail project
@@ -70,13 +70,13 @@ class ProjectController extends Controller
 
         $project->update($request->all());
 
-        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
+        return redirect()->route('dashboard')->with('success', 'Project updated successfully.');
     }
 
     // Hapus project
     public function destroy(Project $project)
     {
         $project->delete();
-        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
+        return redirect()->route('dashboard')->with('success', 'Project deleted successfully.');
     }
 }

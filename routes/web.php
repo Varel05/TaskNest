@@ -11,16 +11,19 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+    // Projects (CRUD)
     Route::resource('projects', ProjectController::class);
+
+    // Group Members (Store)
     Route::post('/group-members', [GroupMemberController::class, 'store'])->name('group-members.store');
+
+    // Profile (Edit, Update, Destroy)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
-
-Route::resource('projects', ProjectController::class)->middleware('auth');
-Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-Route::post('/group-members', [GroupMemberController::class, 'store'])->name('group-members.store');
