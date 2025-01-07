@@ -28,17 +28,39 @@
             </div>
         </div>
 
-        <!-- Projects Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @foreach($projects as $project)
-                <a href="{{ route('projects.show', $project->id) }}" 
-                   class="block bg-green-100 p-6 rounded-lg shadow-sm hover:shadow-md transition">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ $project->name }}</h2>
-                    <p class="text-gray-600">
-                        Ketua Kelompok: <span class="font-medium">{{ $project->leader_name }}</span>
-                    </p>
-                </a>
-            @endforeach
+        @extends('layouts.app')
+
+        @section('content')
+        <div class="container">
+            <h2>Proyek Anda</h2>
+
+            <a href="{{ route('projects.create') }}" class="btn btn-primary">Add Project</a>
+        
+            @if($projects->isEmpty())
+                <p>Anda belum terlibat dalam proyek apa pun.</p>
+            @else
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nama Proyek</th>
+                            <th>Nama Ketua</th>
+                            <th>Status</th>
+                            <th>Periode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($projects as $project)
+                        <tr>
+                            <td>{{ $project->name }}</td>
+                            <td>{{ $project->description }}</td>
+                            <td>{{ ucfirst($project->status) }}</td>
+                            <td>{{ $project->start_date }} - {{ $project->end_date }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
-    </div>
+        @endsection   
+        
 </x-app-layout>
