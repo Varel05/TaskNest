@@ -2,10 +2,10 @@
 <x-app-layout>
     <div class="py-4 px-6">
         <!-- Header Section -->
-        <div class="bg-green-50 p-4 rounded-lg shadow-sm mb-6 h-20"> <!-- Tambah h-16 untuk mengunci tinggi -->
+        <div class="bg-green-100 p-4 rounded-lg shadow-sm mb-6 h-18"> <!-- Tambah h-16 untuk mengunci tinggi -->
             <div class="flex justify-between items-center h-full"> <!-- Tambah h-full -->
                 <div class="flex items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="TaskNest" class="h-full w-auto py-1" style="max-height: 110px;"> <!-- Sesuaikan max-height -->
+                    <span class="text-xl text-align-center font-semibold ml-2">List Project</span>
                 </div>
                 <div class="space-x-4">
                     <a href="{{ route('projects.create') }}" 
