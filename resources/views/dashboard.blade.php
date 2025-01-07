@@ -14,4 +14,38 @@
             </div>
         </div>
     </div>
+
+    @extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h2>Proyek Anda</h2>
+
+    @if($projects->isEmpty())
+        <p>Anda belum terlibat dalam proyek apa pun.</p>
+    @else
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama Proyek</th>
+                    <th>Deskripsi</th>
+                    <th>Status</th>
+                    <th>Periode</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($projects as $project)
+                <tr>
+                    <td>{{ $project->name }}</td>
+                    <td>{{ $project->description }}</td>
+                    <td>{{ ucfirst($project->status) }}</td>
+                    <td>{{ $project->start_date }} - {{ $project->end_date }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
+@endsection   
+    
 </x-app-layout>
