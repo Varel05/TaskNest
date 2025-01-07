@@ -1,1 +1,1 @@
-<img src="{{ asset('images/logo.png') }}" alt="TaskNest" class="h-12 w-auto py-1"> <!-- Sesuaikan max-height -->
+<img src="{{ asset('images/logo.png') }}" alt="TaskNest" class="h-full w-auto py-1" style="max-height: 110px;">
