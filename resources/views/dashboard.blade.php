@@ -30,34 +30,62 @@
 
         <!-- Projects Grid -->
         @section('content')
-            <h1>Projects</h1>
-            <a href="{{ route('projects.create') }}" class="btn btn-primary">Add Project</a>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($projects as $project)
+        <div class="container mx-auto p-6">
+            <!-- Title and Add Button -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">Projects</h1>
+                <a href="{{ route('projects.create') }}" 
+                    class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                    Add Project
+                </a>
+            </div>
+
+            <!-- Projects Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 text-gray-800">
                         <tr>
-                            <td>{{ $project->name }}</td>
-                            <td>{{ $project->status }}</td>
-                            <td>
-                                <a href="{{ route('projects.show', $project->id) }}">View</a>
-                                <a href="{{ route('projects.edit', $project->id) }}">Edit</a>
-                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit">Delete</button>
-                                </form>
-                            </td>
+                            <th class="px-6 py-3 text-left text-sm font-medium">Name</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium">Status</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium">Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($projects as $project)
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-6 py-4 text-gray-700">{{ $project->name }}</td>
+                                <td class="px-6 py-4 text-gray-700">{{ $project->status }}</td>
+                                <td class="px-6 py-4 flex space-x-2">
+                                    <!-- View Button -->
+                                    <a href="{{ route('projects.show', $project->id) }}" 
+                                        class="text-blue-600 hover:text-blue-800">
+                                        View
+                                    </a>
+
+                                    <!-- Edit Button -->
+                                    <a href="{{ route('projects.edit', $project->id) }}" 
+                                        class="text-yellow-600 hover:text-yellow-800">
+                                        Edit
+                                    </a>
+
+                                    <!-- Delete Form -->
+                                    <form action="{{ route('projects.destroy', $project->id) }}" 
+                                        method="POST" 
+                                        onsubmit="return confirm('Are you sure?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            class="text-red-600 hover:text-red-800">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
         @endsection
     </div>
 </x-app-layout>
