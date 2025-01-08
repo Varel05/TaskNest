@@ -53,9 +53,9 @@
 
         <!-- Login Button -->
         <div class="flex justify-center mt-10">
-            <x-primary-button class="bg-green-700 text-white hover:bg-green-800 px-6 py-2 rounded-md">
+            <button class="bg-green-700 text-white hover:bg-green-800 px-6 py-2 rounded-md">
                 {{ __('Log in') }}
-            </x-primary-button>
+            </button>
         </div>
 
         <!-- Register Button -->

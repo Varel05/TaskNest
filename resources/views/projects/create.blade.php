@@ -8,7 +8,7 @@
         </h1>
 
         <!-- Form -->
-        <form method="POST" action="{{ isset($project) ? route('projects.update', $project->id) : route('projects.store') }}" class="space-y-6 bg-white dark:bg-gray-900 border-2 p-6 shadow-lg rounded-lg">
+        <form method="POST" action="{{ isset($project) ? route('projects.update', $project->id) : route('projects.store') }}" class="space-y-6 bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg">
             @csrf
             @if(isset($project))
                 @method('PUT')
@@ -16,53 +16,53 @@
 
             <!-- Name -->
             <div>
-                <label for="name" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label for="name" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Name</label>
                 <input type="text" 
                     id="name" 
                     name="name" 
                     value="{{ $project->name ?? '' }}" 
                     required 
-                    class="w-full border-gray-300 dark:bg-gray-900 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+                    class="w-full border-gray-300 dark:bg-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
             </div>
 
             <!-- Description -->
             <div>
-                <label for="description" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label for="description" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea id="description" 
                     name="description" 
                     required 
-                    class="w-full border-gray-300 dark:bg-gray-900 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">{{ $project->description ?? '' }}</textarea>
+                    class="w-full border-gray-300 dark:bg-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">{{ $project->description ?? '' }}</textarea>
             </div>
             
             <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
                 <!-- Start Date -->
                 <div>
-                    <label for="start_date" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <label for="start_date" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Start Date</label>
                     <input type="date" 
                         id="start_date" 
                         name="start_date" 
                         value="{{ $project->start_date ?? '' }}" 
                         required 
-                        class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+                        class="w-full border-gray-300 dark:bg-gray-300 dark:text-gray-700 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
                 </div>
                 <!-- End Date -->
                 <div>
-                    <label for="end_date" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <label for="end_date" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">End Date</label>
                     <input type="date" 
                         id="end_date" 
                         name="end_date" 
                         value="{{ $project->end_date ?? '' }}" 
                         required 
-                        class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+                        class="w-full border-gray-300 dark:bg-gray-300 dark:text-gray-700 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
                 </div>
             </div>
 
             <!-- Status -->
             <div>
-            <label for="status" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label for="status" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Status</label>
             <select id="status" 
                 name="status" 
-                class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+                class="w-full border-gray-300 dark:bg-gray-300 dark:text-gray-700 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
                 <option value="ongoing" {{ (isset($project) && $project->status == 'ongoing') ? 'selected' : '' }}>Ongoing</option>
                 <option value="completed" {{ (isset($project) && $project->status == 'completed') ? 'selected' : '' }}>Completed</option>
             </select>
