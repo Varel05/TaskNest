@@ -39,53 +39,56 @@
                     Add Project
                 </a>
             </div>
-
-            <!-- Projects Table -->
-            <div class="overflow-x-auto ">
-                <table class="min-w-full bg-white dark:bg-gray-900 shadow-md overflow-hidden">
-                    <thead class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Name</th>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Status</th>
-                            <th class="px-6 py-3 text-left text-sm font-medium">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        
+            <!-- Projects Card -->
+            <div class="container mx-auto">
+                @if($projects->isEmpty())
+                    <p class="text-center text-gray-600 dark:text-gray-300">You are not involved in any projects yet.</p>
+                @else
+                    <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
                         @foreach ($projects as $project)
-                            <tr class="border-t">
-                                <td class="px-6 py-4 text-gray-700 dark:text-white">{{ $project->name }}</td>
-                                <td class="px-6 py-4 text-gray-700 dark:text-white">{{ $project->status }}</td>
-                                <td class="px-6 py-4 flex space-x-2">
-                                    <!-- View Button -->
-                                    <a href="{{ route('projects.show', $project->id) }}" 
-                                        class="text-blue-600 hover:text-blue-800">
-                                        View
-                                    </a>
-
-                                    <!-- Edit Button -->
-                                    <a href="{{ route('projects.edit', $project->id) }}" 
-                                        class="text-yellow-600 hover:text-yellow-800">
-                                        Edit
-                                    </a>
-
-                                    <!-- Delete Form -->
-                                    <form action="{{ route('projects.destroy', $project->id) }}" 
-                                        method="POST" 
-                                        onsubmit="return confirm('Are you sure?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                            class="text-red-600 hover:text-red-800">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                            <div 
+                                class="bg-white shadow rounded-lg hover:shadow-lg transition cursor-pointer" 
+                                onclick="window.location='{{ route('projects.show', $project->id) }}'">
+                                <!-- Project Name with Background -->
+                                <div class="bg-blue-100 p-3 rounded-t-lg">
+                                    <h5 class="text-lg font-semibold text-gray-700">{{ $project->name }}</h5>
+                                </div>
+                                <!-- Project Information -->
+                                <div class="p-4">
+                                    <table class="text-sm w-full">
+                                        <tr>
+                                            <td class="font-semibold text-gray-500">End Date</td>
+                                            <td>: {{ $project->end_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-gray-500">Team Leader</td>
+                                            <td>: 
+                                                @php
+                                                    $leader = $project->groupMembers->firstWhere('role', 'leader');
+                                                @endphp
+                                                {{ $leader ? $leader->user->name : 'Unknown' }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold text-gray-500">Your Role</td>
+                                            <td>: 
+                                                @if ($project->created_by == auth()->id())
+                                                    Leader
+                                                @else
+                                                    Member
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                         @endforeach
-                    </tbody>
-                </table>
+                    </div>
+                @endif
             </div>
         </div>
         @endsection
+        
     </div>
 </x-app-layout>

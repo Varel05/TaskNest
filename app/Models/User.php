@@ -47,14 +47,16 @@ class User extends Authenticatable
     }
     
     // Proyek sebagai anggota
-    public function projectsAsMember()
-    {
-        return $this->belongsToMany(Project::class, 'group_members')->withPivot('role');
-    }
-
-    // Proyek sebagai ketua
     public function projectsAsLeader()
     {
         return $this->hasMany(Project::class, 'created_by');
+    }
+
+    // Relasi ke proyek di mana user adalah anggota
+    public function projectsAsMember()
+    {
+        return $this->belongsToMany(Project::class, 'group_members', 'user_id', 'project_id')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 }

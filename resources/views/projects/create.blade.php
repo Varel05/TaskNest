@@ -34,26 +34,27 @@
                     class="w-full border-gray-300 dark:bg-gray-900 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">{{ $project->description ?? '' }}</textarea>
             </div>
             
-                    <!-- Start Date -->
-            <div>
-            <label for="start_date" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">Start Date</label>
-            <input type="date" 
-                id="start_date" 
-                name="start_date" 
-                value="{{ $project->start_date ?? '' }}" 
-                required 
-                class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
-            </div>
-
-            <!-- End Date -->
-            <div>
-            <label for="end_date" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">End Date</label>
-            <input type="date" 
-                id="end_date" 
-                name="end_date" 
-                value="{{ $project->end_date ?? '' }}" 
-                required 
-                class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+            <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+                <!-- Start Date -->
+                <div>
+                    <label for="start_date" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <input type="date" 
+                        id="start_date" 
+                        name="start_date" 
+                        value="{{ $project->start_date ?? '' }}" 
+                        required 
+                        class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+                </div>
+                <!-- End Date -->
+                <div>
+                    <label for="end_date" class="block dark:text-white text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <input type="date" 
+                        id="end_date" 
+                        name="end_date" 
+                        value="{{ $project->end_date ?? '' }}" 
+                        required 
+                        class="w-full border-gray-300 dark:bg-gray-900 dark:text-white rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+                </div>
             </div>
 
             <!-- Status -->

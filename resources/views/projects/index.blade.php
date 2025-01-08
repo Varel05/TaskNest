@@ -1,32 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Projects</h1>
-    <a href="{{ route('projects.create') }}" class="btn btn-primary">Add Project</a>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($projects as $project)
-                <tr>
-                    <td>{{ $project->name }}</td>
-                    <td>{{ $project->status }}</td>
-                    <td>
-                        <a href="{{ route('projects.show', $project->id) }}">View</a>
-                        <a href="{{ route('projects.edit', $project->id) }}">Edit</a>
-                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<div class="container">
+    <div class="row">
+        @foreach ($projects as $project)
+            <div class="col-md-6 mb-4">
+                <div class="card" onclick="window.location='{{ route('projects.show', $project->id) }}'" style="cursor: pointer;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $project->name }}</h5>
+                        <p class="card-text">
+                            <strong>End Date:</strong> {{ $project->end_date }}<br>
+                            <strong>Created By:</strong> {{ $project->user->name }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
 @endsection
