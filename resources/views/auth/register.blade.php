@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="text-center mb-8">
-        <h1 class="text-2xl font-bold text-gray-800">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
             REGISTER
         </h1>
         <div class="w-28 h-0.5 mx-auto mt-0 bg-green-700"></div>
@@ -11,28 +11,28 @@
 
         <!-- Name -->
         <div class="mb-3">
-            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-white">Name</label>
             <input id="name" type="text" name="name" 
             required class="mt-0.5 block w-full border-0 border-b-2 border-green-700 focus:ring-0 focus:border-green-700">
         </div>
 
         <!-- Email Address -->
         <div class="mb-3">
-            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-white">Email Address</label>
             <input id="email" type="email" name="email" 
             required class="mt-0.5 block w-full border-0 border-b-2 border-green-700 focus:ring-0 focus:border-green-700">
         </div>
 
         <!-- Password -->
         <div class="mb-3">
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-white">Password</label>
             <input id="password" type="password" name="password" 
             required class="mt-0.5 block w-full border-0 border-b-2 border-green-700 focus:ring-0 focus:border-green-700">
         </div>
 
         <!-- Confirm Password -->
         <div class="mb-3">
-            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-white">Confirm Password</label>
             <input id="password_confirmation" type="password" name="password_confirmation" 
             required class="mt-0.5 block w-full border-0 border-b-2 border-green-700 focus:ring-0 focus:border-green-700">
         </div>

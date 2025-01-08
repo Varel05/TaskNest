@@ -4,7 +4,7 @@
 
     <!-- Title -->
     <div class="text-center mb-10">
-        <h1 class="text-2xl font-bold text-gray-800">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
             LOGIN
         </h1>
         <div class="w-20 h-0.5 mx-auto mt-0 bg-green-700"></div>
@@ -15,7 +15,7 @@
 
         <!-- Email Address -->
         <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-white">Email</label>
             <input id="email" type="email" name="email" 
                 value="{{ old('email') }}" 
                 required autofocus class="w-full mt-1 border-0 border-b-2 border-green-700 focus:outline-none focus:ring-0 focus:border-green-500" />
@@ -26,7 +26,7 @@
 
         <!-- Password -->
         <div class="mb-4">
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-white">Password</label>
             <input id="password" type="password" name="password" 
                 required class="w-full mt-1 border-0 border-b-2 border-green-700 focus:outline-none focus:ring-0 focus:border-green-500" />
             @error('password')

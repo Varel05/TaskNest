@@ -52,7 +52,7 @@
                     </thead>
                     <tbody>
                         @foreach ($projects as $project)
-                            <tr class="border-b">
+                            <tr class="border-t">
                                 <td class="px-6 py-4 text-gray-700 dark:text-white">{{ $project->name }}</td>
                                 <td class="px-6 py-4 text-gray-700 dark:text-white">{{ $project->status }}</td>
                                 <td class="px-6 py-4 flex space-x-2">
