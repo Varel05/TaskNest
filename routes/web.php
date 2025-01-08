@@ -34,13 +34,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('group-members/{member}', [GroupMemberController::class, 'kick'])->name('groupMember.kick');
 
     // Tugas (CRUD)
-    // Route::prefix('tasks')->group(function () {
-    //     Route::get('/', [TaskController::class, 'tasksByUser '])->name('tasks.byUser ');
-    //     Route::get('/{project_id}/{user_id}', [TaskController::class, 'index'])->name('tasks.index');
-    //     Route::get('/{userId}', [TaskController::class, 'show'])->name('tasks.show');
-    //     Route::get('/create', [TaskController::class, 'create'])->name('tasks.create');
-    //     Route::post('/', [TaskController::class, 'store'])->name('tasks.store');
-    // });
+    Route::prefix('tasks')->group(function () {
+        Route::get('/', [TaskController::class, 'tasksByUser '])->name('tasks.byUser ');
+        Route::get('/{project_id}/{user_id}', [TaskController::class, 'index'])->name('tasks.index');
+        Route::get('/{userId}', [TaskController::class, 'show'])->name('tasks.show');
+        Route::get('/create', [TaskController::class, 'create'])->name('tasks.create');
+        Route::post('/', [TaskController::class, 'store'])->name('tasks.store');
+    });
 
     Route::prefix('projects/{id}')->group(function () {
         Route::get('/tasks', [TaskController::class, 'tasksByProject'])->name('tasks.byProject');
