@@ -1,51 +1,29 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
-    <h2>Proyek Anda</h2>
+    <h1>Dashboard</h1>
+
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     @if($projects->isEmpty())
-        <p>Anda belum terlibat dalam proyek apa pun.</p>
+        <p>No projects found. <a href="{{ route('projects.create') }}">Create a new project</a></p>
     @else
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nama Proyek</th>
-                    <th>Deskripsi</th>
-                    <th>Status</th>
-                    <th>Periode</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($projects as $project)
-                <tr>
-                    <td>{{ $project->name }}</td>
-                    <td>{{ $project->description }}</td>
-                    <td>{{ ucfirst($project->status) }}</td>
-                    <td>{{ $project->start_date }} - {{ $project->end_date }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="row">
+            @foreach($projects as $project)
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $project->name }}</h5>
+                            <p class="card-text">{{ $project->description }}</p>
+                            <a href="{{ route('projects.show', $project->id) }}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
     @endif
 </div>
-@endsection   
-    
-</x-app-layout>
+@endsection

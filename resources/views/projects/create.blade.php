@@ -1,30 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>{{ isset($project) ? 'Edit Project' : 'Create Project' }}</h1>
-    <form method="POST" action="{{ isset($project) ? route('projects.update', $project->id) : route('projects.store') }}">
+<div class="container">
+    <h1>Create Project</h1>
+    <form action="{{ route('projects.store') }}" method="POST">
         @csrf
-        @if(isset($project))
-            @method('PUT')
-        @endif
-        <label>Name</label>
-        <input type="text" name="name" value="{{ $project->name ?? '' }}" required>
-        
-        <label>Description</label>
-        <textarea name="description" required>{{ $project->description ?? '' }}</textarea>
-        
-        <label>Start Date</label>
-        <input type="date" name="start_date" value="{{ $project->start_date ?? '' }}" required>
-        
-        <label>End Date</label>
-        <input type="date" name="end_date" value="{{ $project->end_date ?? '' }}" required>
-        
-        <label>Status</label>
-        <select name="status">
-            <option value="ongoing" {{ (isset($project) && $project->status == 'ongoing') ? 'selected' : '' }}>Ongoing</option>
-            <option value="completed" {{ (isset($project) && $project->status == 'completed') ? 'selected' : '' }}>Completed</option>
-        </select>
-        
-        <button type="submit">Save</button>
+        <div class="mb-3">
+            <label for="name" class="form-label">Project Name</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="4" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            <input type="date" name="start_date" id="start_date" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="end_date" class="form-label">End Date</label>
+            <input type="date" name="end_date" id="end_date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Next</button>
     </form>
+</div>
 @endsection

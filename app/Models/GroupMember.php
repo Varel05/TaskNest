@@ -9,18 +9,21 @@ class GroupMember extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['project_id', 'user_id', 'role'];
+    protected $fillable = [
+        'project_id',
+        'user_id',
+        'role',
+    ];
 
-    // Relasi ke proyek
+    // Relasi ke tabel 'projects'
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
-    // Relasi ke pengguna
+    // Relasi ke tabel 'users'
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
-
