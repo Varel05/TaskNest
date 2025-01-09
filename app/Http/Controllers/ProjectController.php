@@ -87,4 +87,22 @@ class ProjectController extends Controller
         return redirect()->route('projects.show', $project->id)
                         ->with('success', 'Members added successfully.');
     }
+
+    public function removeMember(Project $project, $member)
+    {
+    // Authorize the action (optional, sesuaikan dengan kebutuhan)
+    $this->authorize('update', $project);
+
+    // Find the group member
+    $groupMember = GroupMember::findOrFail($member);
+    
+    // Check if the member is not a leader
+    if ($groupMember->role === 'member') {
+        // Delete the member
+        $groupMember->delete();
+        return redirect()->back()->with('success', 'Anggota berhasil dihapus dari proyek.');
+    }
+    
+    return redirect()->back()->with('error', 'Tidak dapat menghapus leader proyek.');
+    }
 }
