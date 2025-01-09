@@ -1,3 +1,4 @@
+// web.php
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -34,22 +35,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/projects/{project}/members/{member}', [ProjectController::class, 'removeMember'])->name('projects.removeMember');
 
     // Tugas (CRUD)
-    Route::prefix('tasks')->group(function () {
-        Route::get('/', [TaskController::class, 'tasksByUser '])->name('tasks.byUser ');
-        Route::get('/{project_id}/{user_id}', [TaskController::class, 'index'])->name('tasks.index');
-        Route::get('/{userId}', [TaskController::class, 'show'])->name('tasks.show');
-        Route::get('/create', [TaskController::class, 'create'])->name('tasks.create');
-        Route::post('/', [TaskController::class, 'store'])->name('tasks.store');
-    });
-
-    Route::prefix('projects/{id}')->group(function () {
-        Route::get('/tasks', [TaskController::class, 'tasksByProject'])->name('tasks.byProject');
-    });
-
     Route::prefix('projects/{project_id}')->group(function () {
-        Route::get('/tasks/create/{user_id}', [TaskController::class, 'createTask'])->name('tasks.create');
-        Route::post('/tasks', [TaskController::class, 'storeTask'])->name('tasks.store');
+        Route::get('/tasks/{user_id}', [TaskController::class, 'index'])->name('tasks.index');
+        Route::get('/tasks/create/{user_id}', [TaskController::class, 'create'])->name('tasks.create');
+        Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     });
+
+    Route::get('/projects/{id}/tasks', [TaskController::class, 'tasksByProject'])->name('tasks.byProject');
 
     // Profil (Edit, Update, Destroy)
     Route::prefix('profile')->group(function () {
