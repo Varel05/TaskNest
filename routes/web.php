@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/store-member', [ProjectController::class, 'storeMember'])->name('projects.storeMember');
     });
 
-    Route::delete('group-members/{member}', [GroupMemberController::class, 'kick'])->name('groupMember.kick');
+    Route::delete('/projects/{project}/members/{member}', 'ProjectController@removeMember')->name('projects.removeMember');
 
     // Tugas (CRUD)
     Route::prefix('tasks')->group(function () {
