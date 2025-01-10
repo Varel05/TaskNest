@@ -17,7 +17,7 @@ class Task extends Model
         'due_date',
         'status',
         'priority',
-        'submission_file', // untuk file submission
+        'submission_file',
     ];
 
     // Relasi ke Project

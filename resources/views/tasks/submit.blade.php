@@ -2,16 +2,26 @@
 
 @section('content')
 <div class="container">
-    <h1>Submit Task: {{ $task->title }}</h1>
+    <h1>Submit Task</h1>
+    <p><strong>Task:</strong> {{ $task->title }}</p>
+    <p>{{ $task->description }}</p>
+    <p><strong>Due Date:</strong> {{ $task->due_date }}</p>
 
-    <form action="{{ route('tasks.storeSubmission', ['taskId' => $task->id]) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="form-group">
-            <label for="submission_file">Upload File Submission</label>
-            <input type="file" name="submission_file" class="form-control" required>
-        </div>
-        
-        <button type="submit" class="btn btn-success mt-3">Submit</button>
-    </form>
+    @if ($task->status === 'done')
+        <p class="text-success">Task already submitted.</p>
+        <p>Submission File: <a href="{{ Storage::url($task->submission_file) }}" target="_blank">View Submission</a></p>
+    @else
+        <form action="{{ route('tasks.storeSubmission', $task->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="form-group">
+                <label for="submission_file">Upload Submission File</label>
+                <input type="file" class="form-control" id="submission_file" name="submission_file" required>
+                @error('submission_file')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+    @endif
 </div>
 @endsection

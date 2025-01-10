@@ -73,41 +73,54 @@ class TaskController extends Controller
     }
 
     // Menampilkan form untuk submit tugas
-    public function submit(Request $request, $taskId)
+    public function submit($taskId)
     {
         $task = Task::findOrFail($taskId);
 
-        if ($task->assigned_to != auth()->id()) {
+        // Validasi: Hanya pengguna yang ditugaskan atau leader proyek yang dapat mengakses
+        $isLeader = GroupMember::where('project_id', $task->project_id)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')
+            ->exists();
+
+        if ($task->assigned_to != auth()->id() && !$isLeader) {
             abort(403, 'Unauthorized action.');
         }
 
         return view('tasks.submit', compact('task'));
     }
 
-    // Menyimpan submission file
     public function storeSubmission(Request $request, $taskId)
     {
-        $request->validate([
-            'submission_file' => 'required|file|mimes:pdf,doc,docx,zip|max:2048',
-        ]);
-
         $task = Task::findOrFail($taskId);
 
+        // Validasi: Hanya pengguna yang ditugaskan atau leader proyek yang dapat submit
         if ($task->assigned_to != auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
 
+        // Validasi input file
+        $request->validate([
+            'submission_file' => 'required|file|mimes:pdf,doc,docx,zip|max:2048',
+        ]);
+
+        // Simpan file submission ke direktori penyimpanan
         $filePath = $request->file('submission_file')->storeAs(
             'submissions',
             "task_{$taskId}_user_" . auth()->id() . '.' . $request->file('submission_file')->getClientOriginalExtension(),
             'public'
         );
 
-        $task->update(['status' => 'done', 'submission_file' => $filePath]);
+        // Update task dengan file submission
+        $task->update([
+            'status' => 'done',
+            'submission_file' => $filePath,
+        ]);
 
         return redirect()->route('tasks.index', ['project_id' => $task->project_id, 'user_id' => auth()->id()])
             ->with('success', 'Task submitted successfully!');
     }
+
 
     public function edit($id)
     {
