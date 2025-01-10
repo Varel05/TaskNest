@@ -15,7 +15,7 @@
             <p>Priority: {{ ucfirst($task->priority) }}</p>
 
             @if($task->status == 'pending' && $task->assigned_to == auth()->id())
-                <a href="{{ route('tasks.submit', ['taskId' => $task->id]) }}" class="btn btn-primary">Submit Task</a>
+                <a href="{{ route('tasks.submit', ['task' => $task->id]) }}" class="btn btn-primary">Submit Task</a>
             @endif
 
             @if($task->submission_file)

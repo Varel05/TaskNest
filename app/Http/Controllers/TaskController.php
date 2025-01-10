@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\GroupMember;
+use App\Models\Submission;
 
 class TaskController extends Controller
 {
@@ -111,11 +112,15 @@ class TaskController extends Controller
             'public'
         );
 
-        // Update task dengan file submission
-        $task->update([
-            'status' => 'done',
-            'submission_file' => $filePath,
+        // Buat entri di tabel submissions
+        Submission::create([
+            'task_id' => $task->id,
+            'user_id' => auth()->id(),
+            'file_path' => $filePath,
         ]);
+
+        // Perbarui status tugas
+        $task->update(['status' => 'in_progress']);
 
         return redirect()->route('tasks.index', ['project_id' => $task->project_id, 'user_id' => auth()->id()])
             ->with('success', 'Task submitted successfully!');
@@ -155,12 +160,13 @@ class TaskController extends Controller
         'description' => 'required|string',
         'due_date' => 'required|date',
         'priority' => 'required|in:low,medium,high',
+        'status' => 'required|string|in:pending,in_progress,completed',
     ]);
 
     // Update task
-    $task->update($request->only('title', 'description', 'due_date', 'priority'));
+    $task->update($request->only('title', 'description', 'due_date', 'priority', 'status'));
 
-    return redirect()->route('tasks.index', ['project_id' => $task->project_id, 'user_id' => auth()->id()])
+    return redirect()->route('tasks.show', $task->id)
         ->with('success', 'Task updated successfully!');
 }
 

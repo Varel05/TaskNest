@@ -32,6 +32,15 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status" required>
+                <option value="pending" {{ old('status', $task->status) === 'pending' ? 'selected' : '' }}>Pending</option>
+                <option value="in_progress" {{ old('status', $task->status) === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                <option value="done" {{ old('status', $task->status) === 'done' ? 'selected' : '' }}>Done</option>
+            </select>
+        </div>        
+
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>

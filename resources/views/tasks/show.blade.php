@@ -9,10 +9,16 @@
     <p><strong>Status:</strong> {{ ucfirst($task->status) }}</p>
     <p><strong>Priority:</strong> {{ ucfirst($task->priority) }}</p>
 
-    @if($task->submission_file)
-        <p><strong>Submission File:</strong> 
-            <a href="{{ Storage::url($task->submission_file) }}" target="_blank">View Submission</a>
+     <!-- Cek jika ada submission untuk task ini -->
+     @if($task->submissions()->exists())
+        @php
+            $submission = $task->submissions()->latest()->first();  // Ambil submission terakhir
+        @endphp
+        <p><strong>Submission File:</strong>
+            <a href="{{ Storage::url($submission->file_path) }}" target="_blank">View Submission</a>
         </p>
+    @else
+        <p>No submission file available.</p>
     @endif
 
     @if($userRole === 'leader')
