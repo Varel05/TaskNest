@@ -6,7 +6,9 @@
 
     @foreach($tasks as $task)
         <div class="task-item">
-            <h4>{{ $task->title }}</h4>
+            <a href="{{ route('tasks.show', $task->id) }}" class="text-decoration-none">
+                {{ $task->title }}
+            </a>
             <p>{{ $task->description }}</p>
             <p>Due Date: {{ $task->due_date }}</p>
             <p>Status: {{ ucfirst($task->status) }}</p>

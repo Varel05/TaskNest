@@ -37,4 +37,9 @@ class Task extends Model
     {
         return $this->hasMany(Submission::class);
     }
+    // Relasi ke comments
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

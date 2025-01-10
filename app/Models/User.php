@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function groupMembers()
+    {
+        return $this->hasMany(GroupMember::class, 'user_id');
+    }
 }

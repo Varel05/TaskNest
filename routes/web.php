@@ -27,12 +27,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('projects/{project}/remove-member/{user}', [GroupMemberController::class, 'removeMember'])->name('projects.removeMember');
 
     Route::resource('tasks', TaskController::class);
+    Route::get('/tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
     Route::get('tasks/{task}/submit', [TaskController::class, 'submit'])->name('tasks.submit');
     Route::post('tasks/{task}/submit', [TaskController::class, 'storeSubmission'])->name('tasks.storeSubmission');
+    Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
 
     Route::resource('comments', CommentController::class)->only(['store']);
     Route::get('tasks/{task}/comments', [CommentController::class, 'index'])->name('comments.index');
-    Route::post('tasks/{task}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/tasks/{task}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 });
 

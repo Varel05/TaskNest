@@ -29,7 +29,7 @@
                     <td>
                         <a href="{{ route('tasks.index', ['project_id' => $project->id, 'user_id' => $groupMember->user_id]) }}">
                             {{ $groupMember->user->name }}
-                        </a>
+                        </a>                        
                     </td>
                     <td>{{ $groupMember->user->email }}</td>
                     <td>{{ $groupMember->role }}</td>

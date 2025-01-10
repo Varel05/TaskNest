@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\GroupMember;
+use App\Models\Task;
 
 class ProjectController extends Controller
 {
@@ -48,8 +49,9 @@ class ProjectController extends Controller
     
     public function show($id)
     {
-        $project = Project::findOrFail($id);
-        $userRole = auth()->user()->role; // Ambil role user yang sedang login
+        $project = Project::with(['groupMembers.user', 'tasks'])->findOrFail($id);
+
+        $userRole = auth()->user()->groupMembers()->where('project_id', $id)->first()->role ?? null;
 
         return view('projects.show', compact('project', 'userRole'));
     }
