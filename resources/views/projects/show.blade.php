@@ -53,6 +53,14 @@
 
     @if($userRole === 'leader')
         <a href="{{ route('group-members.create', ['project_id' => $project->id]) }}" class="btn btn-secondary">Add Member</a>
-    @endif
+        <!-- Tombol Delete Project -->
+        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this project?');">
+                Delete Project
+            </button>
+        </form>
+        @endif
 </div>
 @endsection
