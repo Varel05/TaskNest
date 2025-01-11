@@ -1,9 +1,9 @@
 ![logo](public/images/logo.png)
 
-# Sistem Manajemen Tugas Kelompok
+# TaskNest Sistem Manajemen Tugas Kelompok
 
 ## Deskripsi Proyek
-Sistem Manajemen Tugas Kelompok adalah sebuah aplikasi berbasis web yang dirancang untuk membantu tim dalam mengelola proyek, mengatur tugas, dan meningkatkan kolaborasi. Aplikasi ini memungkinkan pengguna untuk membuat proyek, menetapkan tugas kepada anggota tim, melacak kemajuan, dan berkomunikasi melalui komentar.
+TaskNest adalah sebuah aplikasi berbasis web yang dirancang untuk membantu tim dalam mengelola proyek, mengatur tugas, dan meningkatkan kolaborasi. Aplikasi ini memungkinkan pengguna untuk membuat proyek, menetapkan tugas kepada anggota tim, melacak kemajuan, dan berkomunikasi melalui komentar.
 
 ## Fitur Utama
 - **Manajemen Proyek:** CRUD untuk membuat, membaca, memperbarui, dan menghapus proyek.
@@ -15,7 +15,7 @@ Sistem Manajemen Tugas Kelompok adalah sebuah aplikasi berbasis web yang diranca
 ## Teknologi yang Digunakan
 - **Framework:** Laravel 11
 - **Database:** MySQL
-- **Front-End:** Blade Template, Bootstrap/Tailwind CSS
+- **Front-End:** Blade Template, Tailwind CSS
 - **Autentikasi:** Laravel Breeze
 
 ## Struktur Database
