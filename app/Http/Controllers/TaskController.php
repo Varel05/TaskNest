@@ -160,7 +160,7 @@ class TaskController extends Controller
         'description' => 'required|string',
         'due_date' => 'required|date',
         'priority' => 'required|in:low,medium,high',
-        'status' => 'required|string|in:pending,in_progress,completed',
+        'status' => 'required|string|in:pending,in_progress,done',
     ]);
 
     // Update task

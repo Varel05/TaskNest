@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="flex flex-wrap gap-4">
-                    @if($task->status == 'pending' && $task->assigned_to == auth()->id())
+                    @if($task->status != 'done' && $task->assigned_to == auth()->id())
                         <a href="{{ route('tasks.submit', ['task' => $task->id]) }}" 
                            class="inline-flex items-center px-4 py-2 bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white font-medium rounded-lg transition duration-150 ease-in-out">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
