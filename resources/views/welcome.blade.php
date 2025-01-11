@@ -111,7 +111,7 @@
                     fadeElements.forEach(el => {
                         el.style.opacity = 0;
                         el.style.transition = 'opacity 1.5s ease-in-out';
-                        setTimeout(() => (el.style.opacity = 1), 300);
+                        setTimeout(() => (el.style.opacity = 1), 500);
                     });
 
                     // Typing effect
@@ -123,7 +123,7 @@
                         if (charIndex < typingText.length) {
                             typingElement.textContent += typingText.charAt(charIndex);
                             charIndex++;
-                            setTimeout(typeEffect, 50); // Adjust typing speed here (50ms per character)
+                            setTimeout(typeEffect, 40);
                         }
                     }
                     typeEffect();
