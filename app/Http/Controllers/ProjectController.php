@@ -55,6 +55,7 @@ class ProjectController extends Controller
 
         return view('projects.show', compact('project', 'userRole'));
     }
+    
     public function destroy(Project $project)
     {
 
