@@ -96,7 +96,7 @@
             </main>
 
             <!-- Footer -->
-            <footer class="relative z-50 py-8 bg-white border-t border-gray-200">
+            <footer class="relative z-50 py-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center text-sm text-gray-600">
                         &copy; <span id="current-year"></span> TaskNest. All rights reserved.
