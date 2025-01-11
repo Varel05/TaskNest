@@ -1,4 +1,4 @@
-![logo](public\images\logo.png)
+![logo](public/images/logo.png)
 
 # Sistem Manajemen Tugas Kelompok
 
