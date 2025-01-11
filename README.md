@@ -1,3 +1,5 @@
+![logo](public\images\logo.png)
+
 # Sistem Manajemen Tugas Kelompok
 
 ## Deskripsi Proyek
