@@ -59,7 +59,11 @@
                     @foreach($project->groupMembers as $groupMember)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <a href="{{ route('tasks.index', ['project_id' => $project->id, 'user_id' => $groupMember->user_id]) }}" 
+                                <a href="
+                                @if($groupMember->role == 'member')
+                                {{ route('tasks.index', ['project_id' => $project->id, 'user_id' => $groupMember->user_id]) }}
+                                @endif
+                                "
                                    class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
                                     {{ $groupMember->user->name }}
                                 </a>
@@ -98,15 +102,12 @@
     @endif
 
     @if($userRole === 'leader')
-        <a href="{{ route('group-members.create', ['project_id' => $project->id]) }}" class="btn btn-secondary">Add Member</a>
-        <!-- Tombol Delete Project -->
-        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this project?');">
-                Delete Project
-            </button>
-        </form>
-        @endif
+        <div class="mt-8">
+            <a href="{{ route('group-members.create', ['project_id' => $project->id]) }}" 
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-gray-900">
+                Add Member
+            </a>
+        </div>
+    @endif
 </div>
 @endsection
