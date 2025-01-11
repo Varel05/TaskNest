@@ -55,5 +55,15 @@ class ProjectController extends Controller
 
         return view('projects.show', compact('project', 'userRole'));
     }
+    
+    public function destroy(Project $project)
+    {
 
+        // Hapus project beserta anggota grup dan task yang terkait
+        $project->groupMembers()->delete(); // Hapus anggota grup
+        $project->tasks()->delete(); // Hapus task
+        $project->delete(); // Hapus project
+
+        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
+    }
 }

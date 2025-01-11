@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('projects/{project}/add-member', [GroupMemberController::class, 'addMemberForm'])->name('projects.addMemberForm');
     Route::post('projects/{project}/add-member', [GroupMemberController::class, 'storeMember'])->name('projects.storeMember');
     Route::delete('projects/{project}/remove-member/{user}', [GroupMemberController::class, 'removeMember'])->name('projects.removeMember');
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
     Route::resource('tasks', TaskController::class);
     Route::get('/tasks/{id}', [TaskController::class, 'show'])->name('tasks.show');
