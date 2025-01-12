@@ -37,6 +37,10 @@ class Task extends Model
     {
         return $this->hasMany(Submission::class);
     }
+    public function submission()
+    {
+        return $this->hasOne(Submission::class);
+    }
     // Relasi ke comments
     public function comments()
     {

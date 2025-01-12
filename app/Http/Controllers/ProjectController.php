@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Models\Project;
 use App\Models\GroupMember;
 use App\Models\Task;
@@ -58,12 +60,30 @@ class ProjectController extends Controller
     
     public function destroy(Project $project)
     {
+        // Hapus data pada tabel submissions terkait proyek ini
+        foreach ($project->tasks as $task) {
+            foreach ($task->submissions as $submission) {
+                // Hapus file fisik di direktori storage/app/public/submissions
+                $filePath = 'submissions/' . basename($submission->file_path);
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
 
+                if (!Storage::disk('public')->exists($filePath)) {
+                    Log::warning("File tidak ditemukan: $filePath");
+                }
+    
+                // Hapus data submission dari database
+                $submission->delete();
+            }
+        }
+    
         // Hapus project beserta anggota grup dan task yang terkait
         $project->groupMembers()->delete(); // Hapus anggota grup
         $project->tasks()->delete(); // Hapus task
         $project->delete(); // Hapus project
-
+    
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
+    
 }

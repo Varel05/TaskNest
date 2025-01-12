@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\GroupMember;
@@ -61,7 +62,7 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::with('submission')->findOrFail($id);
 
         // Ambil role pengguna terkait dengan project
         $project = $task->project; // Pastikan relasi `project` sudah didefinisikan di model `Task`
@@ -95,7 +96,7 @@ class TaskController extends Controller
     {
         $task = Task::findOrFail($taskId);
 
-        // Validasi: Hanya pengguna yang ditugaskan atau leader proyek yang dapat submit
+        // Validasi: Hanya pengguna yang ditugaskan atau pemilik proyek yang dapat submit
         if ($task->assigned_to != auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -105,14 +106,21 @@ class TaskController extends Controller
             'submission_file' => 'required|file|mimes:pdf,doc,docx,zip|max:2048',
         ]);
 
-        // Simpan file submission ke direktori penyimpanan
+        // Hapus file sebelumnya jika ada
+        $existingSubmission = Submission::where('task_id', $task->id)->where('user_id', auth()->id())->first();
+        if ($existingSubmission) {
+            Storage::disk('public')->delete($existingSubmission->file_path);
+            $existingSubmission->delete();
+        }
+
+        // Simpan file submission baru
         $filePath = $request->file('submission_file')->storeAs(
             'submissions',
             "task_{$taskId}_user_" . auth()->id() . '.' . $request->file('submission_file')->getClientOriginalExtension(),
             'public'
         );
 
-        // Buat entri di tabel submissions
+        // Buat atau perbarui entri di tabel submissions
         Submission::create([
             'task_id' => $task->id,
             'user_id' => auth()->id(),
@@ -122,7 +130,7 @@ class TaskController extends Controller
         // Perbarui status tugas
         $task->update(['status' => 'in_progress']);
 
-        return redirect()->route('tasks.index', ['project_id' => $task->project_id, 'user_id' => auth()->id()])
+        return redirect()->route('tasks.index', ['project_id' => $task->project_id, 'user_id' => auth()->id(),])
             ->with('success', 'Task submitted successfully!');
     }
 
