@@ -97,22 +97,22 @@ class GroupMemberController extends Controller
         return redirect()->route('projects.show', $projectId)->with('success', 'Member added successfully!');
     }
 
-public function removeMember($projectId, $userId)
-{
-    $member = GroupMember::where('project_id', $projectId)
-        ->where('user_id', $userId)
-        ->where('role', 'member')
-        ->firstOrFail();
+    public function removeMember($projectId, $userId)
+    {
+        $member = GroupMember::where('project_id', $projectId)
+            ->where('user_id', $userId)
+            ->where('role', 'member')
+            ->firstOrFail();
 
-    if (!GroupMember::where('project_id', $projectId)
-        ->where('user_id', auth()->id())
-        ->where('role', 'leader')->exists()) {
-        abort(403, 'Unauthorized action.');
+        if (!GroupMember::where('project_id', $projectId)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')->exists()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $member->delete();
+
+        return redirect()->route('projects.show', $projectId)->with('success', 'Member removed successfully!');
     }
-
-    $member->delete();
-
-    return redirect()->route('projects.show', $projectId)->with('success', 'Member removed successfully!');
-}
 
 }
