@@ -45,56 +45,57 @@ class GroupMemberController extends Controller
     
         return redirect()->route('projects.show', $request->project_id)->with('success', 'Members added successfully!');
     }
+
     public function addMemberForm($projectId)
-{
-    $project = Project::findOrFail($projectId);
+    {
+        $project = Project::findOrFail($projectId);
 
-    if (!GroupMember::where('project_id', $projectId)
-        ->where('user_id', auth()->id())
-        ->where('role', 'leader')->exists()) {
-        abort(403, 'Unauthorized action.');
+        if (!GroupMember::where('project_id', $projectId)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')->exists()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $users = User::whereNotIn('id', function ($query) use ($projectId) {
+            $query->select('user_id')
+                ->from('group_members')
+                ->where('project_id', $projectId);
+        })->get();
+
+        return view('projects.add_member', compact('project', 'users'));
     }
 
-    $users = User::whereNotIn('id', function ($query) use ($projectId) {
-        $query->select('user_id')
-            ->from('group_members')
-            ->where('project_id', $projectId);
-    })->get();
+    public function storeMember(Request $request, $projectId)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|in:member',
+        ]);
 
-    return view('projects.add_member', compact('project', 'users'));
-}
+        $project = Project::findOrFail($projectId);
 
-public function storeMember(Request $request, $projectId)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'role' => 'required|in:member',
-    ]);
+        if (!GroupMember::where('project_id', $projectId)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')->exists()) {
+            abort(403, 'Unauthorized action.');
+        }
 
-    $project = Project::findOrFail($projectId);
+        $existingMember = GroupMember::where('project_id', $projectId)
+            ->where('user_id', $request->user_id)
+            ->first();
 
-    if (!GroupMember::where('project_id', $projectId)
-        ->where('user_id', auth()->id())
-        ->where('role', 'leader')->exists()) {
-        abort(403, 'Unauthorized action.');
+        if ($existingMember) {
+            return redirect()->back()->withErrors('This user is already a member of the project.');
+        }
+
+        GroupMember::create([
+            'project_id' => $projectId,
+            'user_id' => $request->user_id,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('projects.show', $projectId)->with('success', 'Member added successfully!');
     }
-
-    $existingMember = GroupMember::where('project_id', $projectId)
-        ->where('user_id', $request->user_id)
-        ->first();
-
-    if ($existingMember) {
-        return redirect()->back()->withErrors('This user is already a member of the project.');
-    }
-
-    GroupMember::create([
-        'project_id' => $projectId,
-        'user_id' => $request->user_id,
-        'role' => $request->role,
-    ]);
-
-    return redirect()->route('projects.show', $projectId)->with('success', 'Member added successfully!');
-}
 
 public function removeMember($projectId, $userId)
 {
