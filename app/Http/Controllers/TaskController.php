@@ -2,90 +2,180 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Task;
+use App\Models\Project;
+use App\Models\GroupMember;
+use App\Models\Submission;
 
 class TaskController extends Controller
 {
-    public function index($project_id, $user_id)
+    // Menampilkan daftar tugas
+    public function index(Request $request)
     {
-        // Ambil data tugas berdasarkan project_id dan user_id
-        $tasks = Task::where('project_id', $project_id)
-                     ->where('assigned_to', $user_id)
-                     ->get();
-    
-        return view('tasks.index', compact('tasks', 'project_id', 'user_id'));
+        $project = Project::findOrFail($request->project_id);
+        $tasks = Task::where('project_id', $request->project_id)
+            ->where('assigned_to', $request->user_id)
+            ->get();
+
+            return view('tasks.index', compact('tasks', 'project'));
     }
 
-    public function tasksByUser($project_id, $user_id)
+    // Menampilkan form untuk membuat tugas
+    public function create(Request $request)
     {
-        $project = Project::findOrFail($project_id);
-        $tasks = Task::where('project_id', $project_id)
-                    ->where('assigned_to', $user_id)
-                    ->get();
+        $projectId = $request->project_id;
+        $userId = $request->user_id;
 
-        $user = User::findOrFail($user_id);
-        $isLeader = $project->groupMembers()->where('user_id', Auth::id())->where('role', 'leader')->exists();
-
-        return view('tasks.user', compact('project', 'tasks', 'user', 'isLeader'));
+        return view('tasks.create', [
+            'projectId' => $projectId,
+            'userId' => $userId,
+        ]);
     }
 
-    public function tasksByProject($projectId)
-    {
-        // Cari proyek dan relasi anggota kelompok
-        $project = Project::with('groupMembers.user')->findOrFail($projectId);
-
-        // Ambil semua anggota
-        $members = $project->groupMembers;
-
-        // Ambil task berdasarkan anggota kelompok
-        $tasks = [];
-        foreach ($members as $member) {
-            $memberTasks = $member->user->tasks()->where('project_id', $projectId)->get();
-            $tasks[$member->user->id] = [
-                'user' => $member->user,
-                'tasks' => $memberTasks,
-            ];
-        }
-
-        return view('tasks.by_project', compact('project', 'tasks'));
-    }
-
-    public function create($project_id)
-    {
-        return view('tasks.create', compact('project_id'));
-    }
-
+    // Menyimpan tugas baru
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'assigned_to' => 'required',
+            'project_id' => 'required|exists:projects,id',
+            'assigned_to' => 'required|exists:users,id',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
             'due_date' => 'required|date',
-            'status' => 'required',
-            'priority' => 'required',
+            'priority' => 'required|in:low,medium,high',
         ]);
 
         Task::create([
             'project_id' => $request->project_id,
+            'assigned_to' => $request->assigned_to,
             'title' => $request->title,
             'description' => $request->description,
             'assigned_to' => $request->assigned_to,
             'due_date' => $request->due_date,
-            'status' => $request->status,
+            'status' => 'pending',
             'priority' => $request->priority,
         ]);
 
-        return redirect()->route('tasks.index', ['project_id' => $request->project_id, 'user_id' => $request->assigned_to]);
+        return redirect()->route('projects.show', $request->project_id)->with('success', 'Task added successfully!');
     }
 
-    public function show($userId)
+    public function show($id)
     {
-        $tasks = Task::where('assigned_to', $userId)->get();
-        return view('tasks.show', compact('tasks'));
+        $task = Task::with('submission')->findOrFail($id);
+
+        // Ambil role pengguna terkait dengan project
+        $project = $task->project; // Pastikan relasi `project` sudah didefinisikan di model `Task`
+        $userRole = auth()->user()->groupMembers()
+            ->where('project_id', $project->id)
+            ->first()
+            ->role ?? null;
+
+        return view('tasks.show', compact('task', 'userRole'));
     }
+
+    // Menampilkan form untuk submit tugas
+    public function submit($taskId)
+    {
+        $task = Task::findOrFail($taskId);
+
+        // Validasi: Hanya pengguna yang ditugaskan atau leader proyek yang dapat mengakses
+        $isLeader = GroupMember::where('project_id', $task->project_id)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')
+            ->exists();
+
+        if ($task->assigned_to != auth()->id() && !$isLeader) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('tasks.submit', compact('task'));
+    }
+
+    public function storeSubmission(Request $request, $taskId)
+    {
+        $task = Task::findOrFail($taskId);
+
+        // Validasi: Hanya pengguna yang ditugaskan atau pemilik proyek yang dapat submit
+        if ($task->assigned_to != auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validasi input file
+        $request->validate([
+            'submission_file' => 'required|file|mimes:pdf,doc,docx,zip|max:2048',
+        ]);
+
+        // Hapus file sebelumnya jika ada
+        $existingSubmission = Submission::where('task_id', $task->id)->where('user_id', auth()->id())->first();
+        if ($existingSubmission) {
+            Storage::disk('public')->delete($existingSubmission->file_path);
+            $existingSubmission->delete();
+        }
+
+        // Simpan file submission baru
+        $filePath = $request->file('submission_file')->storeAs(
+            'submissions',
+            "task_{$taskId}_user_" . auth()->id() . '.' . $request->file('submission_file')->getClientOriginalExtension(),
+            'public'
+        );
+
+        // Buat atau perbarui entri di tabel submissions
+        Submission::create([
+            'task_id' => $task->id,
+            'user_id' => auth()->id(),
+            'file_path' => $filePath,
+        ]);
+
+        // Perbarui status tugas
+        $task->update(['status' => 'in_progress']);
+
+        return redirect()->route('tasks.index', ['project_id' => $task->project_id, 'user_id' => auth()->id(),])
+            ->with('success', 'Task submitted successfully!');
+    }
+
+
+    public function edit($id)
+    {
+        $task = Task::findOrFail($id);
+
+        // Cek apakah pengguna adalah member proyek dengan role leader
+        $isLeader = GroupMember::where('project_id', $task->project_id)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')
+            ->exists();
+
+        if ($task->assigned_to != auth()->id() && !$isLeader) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('tasks.edit', compact('task'));
+    }
+
+    public function update(Request $request, $taskId)
+{
+    $task = Task::findOrFail($taskId);
+
+    // Pastikan pengguna memiliki izin untuk mengedit
+   $isLeader = GroupMember::where('project_id', $task->project_id)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')
+            ->exists();
+
+    // Validasi input
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'due_date' => 'required|date',
+        'priority' => 'required|in:low,medium,high',
+        'status' => 'required|string|in:pending,in_progress,done',
+    ]);
+
+    // Update task
+    $task->update($request->only('title', 'description', 'due_date', 'priority', 'status'));
+
+    return redirect()->route('tasks.show', $task->id)
+        ->with('success', 'Task updated successfully!');
+}
 
 }

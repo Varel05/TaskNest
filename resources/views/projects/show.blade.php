@@ -1,161 +1,113 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <!-- Project Details Card -->
-    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
-        <!-- Header Section -->
-        <div class="p-6 border-b border-gray-200">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                Detail Project: <span>{{ $project->name }}</span>
-            </h1>
-        </div>
-
-        <!-- Project Information Card -->
-        <div class="p-6 bg-gray-50 dark:bg-gray-800 space-y-6">
-            <!-- Description -->
-            <div class="grid md:grid-cols-1 gap-6">
-                <div class="flex items-center space-x-3 bg-white dark:bg-gray-300 p-4 rounded-lg shadow-sm">
-                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <div>
-                        <span class="block text-sm text-gray-600 dark:text-gray-700">Deskripsi</span>
-                        <span class="font-medium text-gray-800">{{ $project->description }}</span>
-                    </div>
-                </div>
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-gray-100">Project Details</h1>
+        
+        @if($userRole === 'leader')
+        <!-- Delete Project Button -->
+        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="inline-block">
+            @csrf
+            @method('DELETE')
+            <button type="submit" 
+                    onclick="return confirm('Are you sure you want to delete this project? This action cannot be undone.')"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                Delete Project
+            </button>
+        </form>
+        @endif
+    </div>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <h3 class="text-2xl font-semibold text-green-700 dark:text-green-500 mb-4">{{ $project->name }}</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">{{ $project->description }}</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4">
+                <p class="text-green-700 dark:text-green-400 font-medium">Start Date</p>
+                <p class="text-gray-700 dark:text-gray-300">{{ $project->start_date }}</p>
             </div>
-
-            <!-- Dates Section -->
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="flex items-center space-x-3 bg-white dark:bg-gray-300 p-4 rounded-lg shadow-sm">
-                    <svg class="w-5 h-5 text-green-500 dark:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <div>
-                        <span class="block text-sm text-gray-600 dark:text-gray-700">Tanggal Mulai</span>
-                        <span class="font-medium text-gray-800">{{ $project->start_date }}</span>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-3 bg-white dark:bg-gray-300 p-4 rounded-lg shadow-sm">
-                    <svg class="w-5 h-5 text-red-500 dark:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <div>
-                        <span class="block text-sm text-gray-600 dark:text-gray-700">Tanggal Berakhir</span>
-                        <span class="font-medium text-gray-800">{{ $project->end_date }}</span>
-                    </div>
-                </div>
+            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4">
+                <p class="text-green-700 dark:text-green-400 font-medium">End Date</p>
+                <p class="text-gray-700 dark:text-gray-300">{{ $project->end_date }}</p>
             </div>
-
-            <!-- Status & Created By -->
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="flex items-center space-x-3 bg-white dark:bg-gray-300 p-4 rounded-lg shadow-sm">
-                    <span class="block text-sm text-gray-600 dark:text-gray-700">Status :</span>
-                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold
-                        @if($project->status == 'active')
-                            bg-green-100 text-green-800
-                        @elseif($project->status == 'pending')
-                            bg-yellow-100 text-yellow-800
-                        @else
-                            bg-red-100 text-red-800
-                        @endif">
-                        {{ ucfirst($project->status) }}
-                    </span>
-                </div>
-                
-                <div class="flex items-center space-x-3 bg-white dark:bg-gray-300 p-4 rounded-lg shadow-sm">
-                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <div>
-                        <span class="block text-sm text-gray-600 dark:text-gray-700">Dibuat Oleh</span>
-                        <span class="font-medium text-gray-800">{{ $project->created_by }}</span>
-                    </div>
-                </div>
+            <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4">
+                <p class="text-green-700 dark:text-green-400 font-medium">Status</p>
+                <p class="text-gray-700 dark:text-gray-300">{{ ucfirst($project->status) }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Team Members Section -->
-    <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Anggota Kelompok</h3>
-            <!-- Add Member Button -->
-            <a href="{{ route('projects.addMember', $project->id) }}" 
-               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <svg class="mr-2 -ml-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Tambah Anggota
+    @if($project->groupMembers->isNotEmpty())
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h4 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Members</h4>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-green-50 dark:bg-green-900/30">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach($project->groupMembers as $groupMember)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="
+                                @if($groupMember->role == 'member')
+                                {{ route('tasks.index', ['project_id' => $project->id, 'user_id' => $groupMember->user_id]) }}
+                                @endif
+                                "
+                                   class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
+                                    {{ $groupMember->user->name }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">{{ $groupMember->user->email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">{{ $groupMember->role }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($groupMember->role == 'member')
+                                    <div class="flex space-x-2">
+                                        <a href="{{ route('tasks.create', ['project_id' => $project->id, 'user_id' => $groupMember->user_id]) }}" 
+                                           class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-gray-900">
+                                            Assign Task
+                                        </a>
+                                        <form action="{{ route('projects.removeMember', ['project' => $project->id, 'user' => $groupMember->user_id]) }}" 
+                                              method="POST" class="inline-block">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900">
+                                                Kick
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @else
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center">
+            <p class="text-gray-600 dark:text-gray-300">No members found.</p>
+        </div>
+    @endif
+
+    @if($userRole === 'leader')
+        <div class="mt-8">
+            <a href="{{ route('group-members.create', ['project_id' => $project->id]) }}" 
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-gray-900">
+                Add Member
             </a>
         </div>
-        
-        <div class="p-6">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50 dark:bg-gray-300">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peran</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white dark:bg-gray-200 divide-y divide-gray-200">
-                        @foreach ($project->groupMembers as $member)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {{ $member->user->name }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                        @if($member->role == 'leader')
-                                            bg-blue-100 text-blue-800
-                                        @else
-                                            bg-gray-100 text-gray-800
-                                        @endif">
-                                        {{ ucfirst($member->role) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    @if($member->role == 'member')
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('tasks.index', ['project_id' => $project->id, 'user_id' => $member->user_id]) }}" 
-                                               class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                                Task
-                                            </a>
-                                            <form action="{{ route('projects.removeMember', ['project' => $project->id, 'member' => $member->id]) }}" 
-                                                  method="POST" 
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?');" 
-                                                  class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Back Button -->
-    <div class="max-w-4xl mx-auto mt-6">
-        <a href="{{ route('dashboard') }}" 
-           class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white dark:text-gray-100 dark:bg-gray-800 hover:dark:bg-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2">
-            <svg class="mr-2 -ml-1 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Kembali
-        </a>
-    </div>
+    @endif
 </div>
 @endsection

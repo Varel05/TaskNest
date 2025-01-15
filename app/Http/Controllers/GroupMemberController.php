@@ -2,70 +2,117 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GroupMember;
-use App\Models\Project;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Project;
+use App\Models\GroupMember;
 
 class GroupMemberController extends Controller
 {
-    public function create(Project $project)
+    public function create(Request $request)
     {
-        // Periksa apakah data ketua sudah tersimpan
-        $leaderExists = GroupMember::where('project_id', $project->id)
-            ->where('role', 'leader')
-            ->exists();
-
-        // Simpan data ketua jika belum ada
-        if (!$leaderExists) {
-            GroupMember::create([
-                'project_id' => $project->id,
-                'user_id' => auth()->id(),
-                'role' => 'leader',
+        $projectId = $request->project_id;
+    
+        return view('group_members.create', [
+            'users' => User::where('id', '!=', auth()->id())->get(),
+            'projectId' => $projectId,
+        ]);
+    }
+    
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id',
+        ]);
+    
+        foreach ($request->user_ids as $userId) {
+            GroupMember::firstOrCreate([
+                'project_id' => $request->project_id,
+                'user_id' => $userId,
+            ], [
+                'role' => 'member',
             ]);
         }
-
-        // Ambil daftar pengguna untuk form anggota
-        $users = User::where('id', '!=', auth()->id())->get(); // Kecualikan ketua
-        return view('group_members.create', compact('project', 'users'));
+    
+        // Tambahkan user yang login sebagai leader
+        GroupMember::firstOrCreate([
+            'project_id' => $request->project_id,
+            'user_id' => auth()->id(),
+        ], [
+            'role' => 'leader',
+        ]);
+    
+        return redirect()->route('projects.show', $request->project_id)->with('success', 'Members added successfully!');
     }
 
-    public function store(Request $request, Project $project)
+    public function addMemberForm($projectId)
     {
-        // Validasi input
+        $project = Project::findOrFail($projectId);
+
+        if (!GroupMember::where('project_id', $projectId)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')->exists()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $users = User::whereNotIn('id', function ($query) use ($projectId) {
+            $query->select('user_id')
+                ->from('group_members')
+                ->where('project_id', $projectId);
+        })->get();
+
+        return view('projects.add_member', compact('project', 'users'));
+    }
+
+    public function storeMember(Request $request, $projectId)
+    {
         $request->validate([
-            'members.*.user_id' => 'required|exists:users,id',
-            'members.*.role' => 'required|in:member',
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|in:member',
         ]);
 
-        // Tambahkan anggota lainnya
-        foreach ($request->members as $member) {
-            GroupMember::create([
-                'project_id' => $project->id,
-                'user_id' => $member['user_id'],
-                'role' => $member['role'],
-            ]);
+        $project = Project::findOrFail($projectId);
+
+        if (!GroupMember::where('project_id', $projectId)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')->exists()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        return redirect()->route('projects.index')->with('success', 'Group members added successfully!');
+        $existingMember = GroupMember::where('project_id', $projectId)
+            ->where('user_id', $request->user_id)
+            ->first();
+
+        if ($existingMember) {
+            return redirect()->back()->withErrors('This user is already a member of the project.');
+        }
+
+        GroupMember::create([
+            'project_id' => $projectId,
+            'user_id' => $request->user_id,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('projects.show', $projectId)->with('success', 'Member added successfully!');
     }
 
-    public function kick($memberId)
+    public function removeMember($projectId, $userId)
     {
-        $member = GroupMember::findOrFail($memberId);
-        
-        // Pastikan hanya ketua yang bisa menghapus anggota
-        if(Auth::user()->role != 'ketua') {
-            return redirect()->back()->with('error', 'Hanya ketua yang bisa menghapus anggota.');
+        $member = GroupMember::where('project_id', $projectId)
+            ->where('user_id', $userId)
+            ->where('role', 'member')
+            ->firstOrFail();
+
+        if (!GroupMember::where('project_id', $projectId)
+            ->where('user_id', auth()->id())
+            ->where('role', 'leader')->exists()) {
+            abort(403, 'Unauthorized action.');
         }
 
         $member->delete();
-        return redirect()->route('project.show', $member->project_id)->with('success', 'Anggota berhasil dihapus.');
-    }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return redirect()->route('projects.show', $projectId)->with('success', 'Member removed successfully!');
     }
 
 }

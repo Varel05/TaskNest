@@ -9,24 +9,21 @@ class GroupMember extends Model
 {
     use HasFactory;
 
-    protected $table = 'group_members';
-
-    // Kolom yang dapat diisi melalui mass assignment
     protected $fillable = [
         'project_id',
         'user_id',
         'role',
     ];
 
-    // Relasi ke model Project
+    // Relasi ke tabel 'projects'
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
-    // Relasi ke model User
+    // Relasi ke tabel 'users'
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

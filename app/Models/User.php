@@ -45,18 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    
-    // Proyek sebagai anggota
-    public function projectsAsLeader()
-    {
-        return $this->hasMany(Project::class, 'created_by');
-    }
 
-    // Relasi ke proyek di mana user adalah anggota
-    public function projectsAsMember()
+    public function groupMembers()
     {
-        return $this->belongsToMany(Project::class, 'group_members', 'user_id', 'project_id')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->hasMany(GroupMember::class, 'user_id');
     }
 }

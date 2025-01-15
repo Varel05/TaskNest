@@ -18,13 +18,21 @@ class Project extends Model
         'created_by',
     ];
 
-    public function user()
+    // Relasi dengan User
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-    
+
+    // Relasi untuk groupMembers
     public function groupMembers()
     {
-        return $this->hasMany(GroupMember::class);
+        return $this->hasMany(GroupMember::class, 'project_id');
+    }
+
+    // Relasi dengan Task
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

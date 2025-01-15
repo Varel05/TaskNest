@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
-use App\Models\User;
-use App\Models\GroupMember;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Models\Project;
+use App\Models\GroupMember;
+use App\Models\Task;
 
 class ProjectController extends Controller
 {
-    use AuthorizesRequests;
-
     public function index()
     {
-        $projects = Project::with('user')->get();
-        return view('projects.index', compact('projects'));
+        $userId = auth()->id();
+
+        // Ambil semua proyek di mana user terlibat
+        $projects = Project::whereHas('groupMembers', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+
+        return view('dashboard', compact('projects'));
     }
 
     public function create()
@@ -27,10 +32,9 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required',
+            'description' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|in:ongoing,completed',
         ]);
 
         $project = Project::create([
@@ -38,71 +42,48 @@ class ProjectController extends Controller
             'description' => $request->description,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'status' => $request->status,
+            'status' => 'ongoing',
             'created_by' => auth()->id(),
         ]);
 
-        return redirect()->route('group-members.create', $project->id);
+        return redirect()->route('group-members.create', ['project_id' => $project->id]);
     }
-
+    
     public function show($id)
     {
-        $project = Project::with(['groupMembers.user'])->findOrFail($id);
+        $project = Project::with(['groupMembers.user', 'tasks'])->findOrFail($id);
 
-        return view('projects.show', compact('project'));
+        $userRole = auth()->user()->groupMembers()->where('project_id', $id)->first()->role ?? null;
+
+        return view('projects.show', compact('project', 'userRole'));
     }
-
+    
     public function destroy(Project $project)
     {
-        $project->delete();
-        return redirect()->route('projects.index');
-    }
+        // Hapus data pada tabel submissions terkait proyek ini
+        foreach ($project->tasks as $task) {
+            foreach ($task->submissions as $submission) {
+                // Hapus file fisik di direktori storage/app/public/submissions
+                $filePath = 'submissions/' . basename($submission->file_path);
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
 
-    public function addMemberForm($id)
-    {
-        $project = Project::with('groupMembers')->findOrFail($id);
-        $users = User::whereNotIn('id', $project->groupMembers->pluck('user_id'))->get();
-
-        return view('projects.add-member', compact('project', 'users'));
-    }
-
-    public function storeMember(Request $request, $id)
-    {
-        $project = Project::findOrFail($id);
-
-        $this->authorize('update', $project);
-
-        foreach ($request->members as $memberName) {
-            $user = User::where('name', $memberName)->first();
-
-            if ($user) {
-                GroupMember::create([
-                    'project_id' => $project->id,
-                    'user_id' => $user->id,
-                    'role' => 'member',
-                ]);
+                if (!Storage::disk('public')->exists($filePath)) {
+                    Log::warning("File tidak ditemukan: $filePath");
+                }
+    
+                // Hapus data submission dari database
+                $submission->delete();
             }
         }
-
-        return redirect()->route('projects.show', $project->id)
-                        ->with('success', 'Members added successfully.');
-    }
-
-    public function removeMember(Project $project, $member)
-    {
-    // Authorize the action (optional, sesuaikan dengan kebutuhan)
-    $this->authorize('update', $project);
-
-    // Find the group member
-    $groupMember = GroupMember::findOrFail($member);
     
-    // Check if the member is not a leader
-    if ($groupMember->role === 'member') {
-        // Delete the member
-        $groupMember->delete();
-        return redirect()->back()->with('success', 'Anggota berhasil dihapus dari proyek.');
+        // Hapus project beserta anggota grup dan task yang terkait
+        $project->groupMembers()->delete(); // Hapus anggota grup
+        $project->tasks()->delete(); // Hapus task
+        $project->delete(); // Hapus project
+    
+        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
     
-    return redirect()->back()->with('error', 'Tidak dapat menghapus leader proyek.');
-    }
 }

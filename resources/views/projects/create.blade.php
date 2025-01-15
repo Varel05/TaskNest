@@ -1,80 +1,99 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto p-6">
-        <!-- Title -->
-        <h1 class="text-2xl font-bold text-gray-800 mb-6 dark:text-white">
-            {{ isset($project) ? 'Edit Project' : 'Create Project' }}
-        </h1>
-
-        <!-- Form -->
-        <form method="POST" action="{{ isset($project) ? route('projects.update', $project->id) : route('projects.store') }}" class="space-y-6 bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg">
-            @csrf
-            @if(isset($project))
-                @method('PUT')
-            @endif
-
-            <!-- Name -->
-            <div>
-                <label for="name" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input type="text" 
-                    id="name" 
-                    name="name" 
-                    value="{{ $project->name ?? '' }}" 
-                    required 
-                    class="w-full border-gray-300 dark:bg-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Card Container -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    Create Project
+                </h1>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Fill in the project details to get started
+                </p>
             </div>
 
-            <!-- Description -->
-            <div>
-                <label for="description" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea id="description" 
-                    name="description" 
-                    required 
-                    class="w-full border-gray-300 dark:bg-gray-300 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">{{ $project->description ?? '' }}</textarea>
-            </div>
-            
-            <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
-                <!-- Start Date -->
-                <div>
-                    <label for="start_date" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                    <input type="date" 
-                        id="start_date" 
-                        name="start_date" 
-                        value="{{ $project->start_date ?? '' }}" 
-                        required 
-                        class="w-full border-gray-300 dark:bg-gray-300 dark:text-gray-700 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+            <!-- Form -->
+            <form action="{{ route('projects.store') }}" method="POST">
+                @csrf
+                
+                <!-- Project Name -->
+                <div class="mb-6">
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Project Name
+                    </label>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        id="name" 
+                        required
+                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                        placeholder="Enter project name"
+                    >
                 </div>
-                <!-- End Date -->
-                <div>
-                    <label for="end_date" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">End Date</label>
-                    <input type="date" 
-                        id="end_date" 
-                        name="end_date" 
-                        value="{{ $project->end_date ?? '' }}" 
-                        required 
-                        class="w-full border-gray-300 dark:bg-gray-300 dark:text-gray-700 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
+
+                <!-- Description -->
+                <div class="mb-6">
+                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Description
+                    </label>
+                    <textarea 
+                        name="description" 
+                        id="description" 
+                        rows="4" 
+                        required
+                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                        placeholder="Enter project description"
+                    ></textarea>
                 </div>
-            </div>
 
-            <!-- Status -->
-            <div>
-            <label for="status" class="block dark:text-gray-100 text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select id="status" 
-                name="status" 
-                class="w-full border-gray-300 dark:bg-gray-300 dark:text-gray-700 rounded-md shadow-sm focus:border-green-500 focus:ring focus:ring-green-300">
-                <option value="ongoing" {{ (isset($project) && $project->status == 'ongoing') ? 'selected' : '' }}>Ongoing</option>
-                <option value="completed" {{ (isset($project) && $project->status == 'completed') ? 'selected' : '' }}>Completed</option>
-            </select>
-            </div>
+                <!-- Date Range -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Start Date -->
+                    <div>
+                        <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Start Date
+                        </label>
+                        <input 
+                            type="date" 
+                            name="start_date" 
+                            id="start_date" 
+                            required
+                            class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                        >
+                    </div>
 
-            <!-- Submit Button -->
-            <div class="flex justify-end">
-            <button type="submit" 
-                class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300">
-                Save
-            </button>
-            </div>
-        </form>
+                    <!-- End Date -->
+                    <div>
+                        <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            End Date
+                        </label>
+                        <input 
+                            type="date" 
+                            name="end_date" 
+                            id="end_date" 
+                            required
+                            class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                        >
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button 
+                        type="submit"
+                        class="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-400 transition-colors duration-200"
+                    >
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                        Next
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 @endsection

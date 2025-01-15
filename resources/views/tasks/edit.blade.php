@@ -8,18 +8,17 @@
             <!-- Header -->
             <div class="mb-6">
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                    Create New Task
+                    Edit Task
                 </h1>
                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    Add a new task to your project
+                    Update the details of your task below.
                 </p>
             </div>
 
             <!-- Form -->
-            <form action="{{ route('tasks.store') }}" method="POST">
+            <form action="{{ route('tasks.update', $task->id) }}" method="POST">
                 @csrf
-                <input type="hidden" name="project_id" value="{{ $projectId }}">
-                <input type="hidden" name="assigned_to" value="{{ $userId }}">
+                @method('PUT')
 
                 <!-- Title -->
                 <div class="mb-6">
@@ -30,8 +29,9 @@
                         type="text" 
                         name="title" 
                         id="title" 
+                        value="{{ old('title', $task->title) }}" 
                         required
-                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:ring-opacity-50 transition-colors duration-200"
                         placeholder="Enter task title"
                     >
                 </div>
@@ -46,9 +46,9 @@
                         id="description" 
                         rows="4" 
                         required
-                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:ring-opacity-50 transition-colors duration-200"
                         placeholder="Enter task description"
-                    ></textarea>
+                    >{{ old('description', $task->description) }}</textarea>
                 </div>
 
                 <!-- Due Date and Priority -->
@@ -62,8 +62,9 @@
                             type="date" 
                             name="due_date" 
                             id="due_date" 
+                            value="{{ old('due_date', $task->due_date) }}" 
                             required
-                            class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                            class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:ring-opacity-50 transition-colors duration-200"
                         >
                     </div>
 
@@ -76,13 +77,30 @@
                             name="priority" 
                             id="priority" 
                             required
-                            class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 focus:ring-opacity-50 transition-colors duration-200"
+                            class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:ring-opacity-50 transition-colors duration-200"
                         >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
+                            <option value="low" {{ old('priority', $task->priority) === 'low' ? 'selected' : '' }}>Low</option>
+                            <option value="medium" {{ old('priority', $task->priority) === 'medium' ? 'selected' : '' }}>Medium</option>
+                            <option value="high" {{ old('priority', $task->priority) === 'high' ? 'selected' : '' }}>High</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Status -->
+                <div class="mb-6">
+                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Status
+                    </label>
+                    <select 
+                        name="status" 
+                        id="status" 
+                        required
+                        class="block w-full px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:ring-opacity-50 transition-colors duration-200"
+                    >
+                        <option value="pending" {{ old('status', $task->status) === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="in_progress" {{ old('status', $task->status) === 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                        <option value="done" {{ old('status', $task->status) === 'done' ? 'selected' : '' }}>Done</option>
+                    </select>
                 </div>
 
                 <!-- Submit Button -->
@@ -94,7 +112,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
-                        Save Task
+                        Save Changes
                     </button>
                 </div>
             </form>

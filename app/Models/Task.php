@@ -17,20 +17,33 @@ class Task extends Model
         'due_date',
         'status',
         'priority',
+        'submission_file',
     ];
 
+    // Relasi ke Project
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
-    public function assignedUser()
+    // Relasi ke User (assigned_to)
+    public function user()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function tasks()
+    // Relasi ke Submission (jika ada)
+    public function submissions()
     {
-        return $this->hasMany(Task::class, 'assigned_to');
+        return $this->hasMany(Submission::class);
+    }
+    public function submission()
+    {
+        return $this->hasOne(Submission::class);
+    }
+    // Relasi ke comments
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

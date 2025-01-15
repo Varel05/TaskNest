@@ -3,7 +3,7 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <!-- Title -->
-    <div class="text-center mb-10">
+    <div class="text-center mb-10 mt-2">
         <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
             LOGIN
         </h1>
@@ -59,12 +59,10 @@
         </div>
 
         <!-- Register Button -->
-        <div class="text-center mt-4">
+        <div class="text-center mt-2 mb-2">
             <a href="{{ route('register') }}" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                 {{ __("Don't have an account yet?") }}
             </a>
         </div>
     </form>
 </x-guest-layout>
-
-
